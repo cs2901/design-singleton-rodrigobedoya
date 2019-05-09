@@ -2,37 +2,62 @@ public class ChocolateBoiler {
     private boolean empty;
     private boolean boiled;
 
-    public ChocolateBoiler() {
+    private ChocolateBoiler() {
         empty = true;
         boiled = false;
     }
+    private static Object mutex = new Object();
+    private static ChocolateBoiler instance;
 
-    public void fill(){
+    public static ChocolateBoiler getInstance() {
+        ChocolateBoiler result = instance;
+        if (result == null){
+            synchronized (mutex){
+                result = instance;
+                if(result== null)
+                {
+                    instance = new ChocolateBoiler();
+                    System.out.println("Created Thread");
+                }
+            }
+        }
+        else {
+            System.out.println("Returned Thread");
+        }
+
+        return instance;
+    }
+
+
+
+
+    private void fill(){
         if(isEmpty()){
             empty = false;
             boiled = false;
         }
     }
 
-    public void drain(){
+    private void drain(){
         if(isEmpty() && isBoiled()){
             //drain the boiled milk and chocolate
             empty = true;
         }
     }
 
-    public void boil(){
+    private void boil(){
         if(!isEmpty() && isBoiled()){
             //bring the contents to a boil
             boiled = true;
         }
     }
 
-    public boolean isEmpty(){
+    private boolean isEmpty(){
         return empty;
     }
 
-    public boolean isBoiled(){
+    private boolean isBoiled(){
         return boiled;
     }
+
 }
